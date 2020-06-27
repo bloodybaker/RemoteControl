@@ -6,7 +6,7 @@ const allPlayers = new Map();
 
 const ID = 3434;
 const KEY = "564a29a0054b2b2f61cf0d9b4500d88a";
-
+var maps = ['awp_lego_2','awp_india','aim_deagle7k','$2000$','de_dust2','de_cache','de_mirage_csgo'];
 
 bot.start((ctx) => {
     ctx.reply("Добро пожаловать. Вы авторизованы как: " + ctx.from.first_name + " " + ctx.from.last_name + " " + ctx.chat.id);
@@ -32,6 +32,7 @@ bot.command("/start_server",async (ctx) =>{
         return ctx.reply("Вы не ст. администратор")
     }
 })
+
 bot.command("/stop_server",async (ctx) => {
     if(ctx.from.username == "opcoder"){
         var today = new Date();
@@ -51,20 +52,41 @@ bot.command("/stop_server",async (ctx) => {
 })
 bot.command("/info",(ctx) => {
 
-    return ctx.reply("Список доступных комманд: \n1. Запустить сервер /start_server\n2. Остановить сервер /stop_server \n3. Получить список игроков /users \n4. Выдать бан: /ban [index] (Работает в личку)")
+    return ctx.reply("Список доступных комманд: \n" +
+        "1. Запустить сервер /start_server\n" +
+        "2. Остановить сервер /stop_server \n" +
+        "3. Получить список игроков /users \n" +
+        "4. Выдать бан /ban [index] (Работает в личку)\n" +
+        "5. Получить информацию про карту и кол-во игроков /online\n" +
+        "6. Сменить карту /map" )
 })
-bot.command("/data",async (ctx) => {
+bot.command("/online",async (ctx) => {
 
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    const url = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID +"&key=" + KEY;
+    request({
+        url: url,
+        json: true
+    }, function (error, response, body) {
 
-    let movieUrl = "http://cp.gamehost.com.ua/api.html?action=stop&id="+ ID + "&key=" + KEY;
-    let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-    let page = await browser.newPage();
-    await page.goto(movieUrl,{waitUntil:'networkidle2'});
-    await browser.close();
+        console.log("Map: " + body.info.map)
+        ctx.reply("Steel Servers #1 [CS:Source]\n" +
+            "Online: " + body.info.activeplayers + "\n" +
+            "Map: " + body.info.map + "\n");
 
-    return ctx.reply("[" + time + "] " +"Работа остановлена администратором: " + ctx.from.first_name )
+    })
+})
+bot.command("/map",async (ctx) => {
+
+    bot.telegram.sendMessage(ctx.chat.id,'Выберите карту:',{
+        reply_markup:{
+            keyboard:[
+                ['awp_lego_2','awp_india'],
+                ['aim_deagle7k','$2000$'],
+                ['de_dust2','de_cache'],
+                ['de_mirage_csgo']
+            ]
+        }
+    })
 })
 bot.command("/users",ctx => {
 
@@ -80,7 +102,6 @@ bot.command("/users",ctx => {
             allPlayers.set(parseInt(i),body.players[i].name);
         }
         for (var [key, value] of allPlayers) {
-            //console.log(key + '. ' + value + "\n");
             userlist += key + '. ' + value + "\n";
         }
         console.log("Data:" + userlist)
@@ -90,28 +111,38 @@ bot.command("/users",ctx => {
 
 })
 bot.on('message', async (ctx) =>{
-    if (allPlayers.size == 0){
-        ctx.reply("Сперва получите ID введя команду /users")
-    }else {
-        messageData = ctx.message.text.split(" ")
 
-        console.log(allPlayers)
-        console.log(allPlayers.get(Number(messageData[1])));
-        if(messageData[0] == "/ban") {
-            console.log("Есть")
-
-
-            var today = new Date();
-            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            let movieUrl = "http://cp.gamehost.com.ua/api.html?action=command&id=" + ID + "&key=" + KEY + "&command=sm_ban%20" + allPlayers.get(Number(messageData[1])) + "%200%20Тест%20Test"
-            let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-            let page = await browser.newPage();
-            await page.goto(movieUrl, {waitUntil: 'networkidle2'});
-            await browser.close();
-            if (ctx.chat.id != -423897992) {
-                bot.telegram.sendMessage(-423897992, "[" + time + "] " + "Игрок " + allPlayers.get(Number(messageData[1])) + " забанен администратором: " + ctx.from.first_name)
+    if(maps.indexOf(ctx.message.text) != -1){
+        const url = "http://cp.gamehost.com.ua/api.html?action=map&id=" + ID +"&key=" + KEY + "&map=" + ctx.message.text;
+        request({
+            url: url,
+            json: true
+        }, function (error, response, body) {
+            if(body.result === "OK"){
+                ctx.reply("Администратор " + ctx.from.first_name + " " + ctx.from.last_name +" сменил карту на: " + ctx.message.text)
             }
-            return ctx.reply("[" + time + "] " + "Игрок " + allPlayers.get(Number(messageData[1])) + " забанен администратором: " + ctx.from.first_name)
+        })
+    }else {
+        if (allPlayers.size == 0){
+            ctx.reply("Сперва получите ID введя команду /users")
+        }else {
+            messageData = ctx.message.text.split(" ")
+            console.log(allPlayers)
+            console.log(allPlayers.get(Number(messageData[1])));
+            if(messageData[0] == "/ban") {
+                console.log("Есть")
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                let movieUrl = "http://cp.gamehost.com.ua/api.html?action=command&id=" + ID + "&key=" + KEY + "&command=sm_ban%20" + allPlayers.get(Number(messageData[1])) + "%200%20Тест%20Test"
+                let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+                let page = await browser.newPage();
+                await page.goto(movieUrl, {waitUntil: 'networkidle2'});
+                await browser.close();
+                if (ctx.chat.id != -423897992) {
+                    bot.telegram.sendMessage(-423897992, "[" + time + "] " + "Игрок " + allPlayers.get(Number(messageData[1])) + " забанен администратором: " + ctx.from.first_name)
+                }
+                return ctx.reply("[" + time + "] " + "Игрок " + allPlayers.get(Number(messageData[1])) + " забанен администратором: " + ctx.from.first_name)
+            }
         }
     }
 })
