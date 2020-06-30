@@ -142,7 +142,7 @@ bot.command("/users",ctx => {
     }, function (error, response, body) {
         for (i in body.players) {
             console.log(body.players[i].name);
-            allPlayers.set(parseInt(i),body.players[i].name);
+            allPlayers1.set(parseInt(i),body.players[i].name);
         }
         for (var [key, value] of allPlayers) {
             userlist1 += key + '. ' + value + "\n";
