@@ -144,7 +144,7 @@ bot.command("/users",ctx => {
             console.log(body.players[i].name);
             allPlayers1.set(parseInt(i),body.players[i].name);
         }
-        for (var [key, value] of allPlayers) {
+        for (var [key, value] of allPlayers1) {
             userlist1 += key + '. ' + value + "\n";
         }
         console.log("Data:" + userlist1)
