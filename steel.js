@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer');
 const bot = new Telegraf('991609713:AAF3_AeWLrDlo3ZZKLKiOJdkX55vB8-2Lzw')
 const request = require("request")
 const allPlayers = new Map();
+const allPlayers1 = new Map();
 
 const ID_1 = 3434;
 const KEY_1 = "564a29a0054b2b2f61cf0d9b4500d88a";
@@ -131,8 +132,8 @@ bot.command("/users",ctx => {
         console.log("Data:" + userlist)
         ctx.reply("Steel Servers #1 [CS:Source]\n" + userlist);
     })
-    userlist = "";
-    allPlayers.clear();
+    var userlist1 = "";
+    allPlayers1.clear();
     const url_1 = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID_2 +"&key=" + KEY_2;
     request({
         url: url_1,
@@ -143,12 +144,12 @@ bot.command("/users",ctx => {
             allPlayers.set(parseInt(i),body.players[i].name);
         }
         for (var [key, value] of allPlayers) {
-            userlist += key + '. ' + value + "\n";
+            userlist1 += key + '. ' + value + "\n";
         }
-        console.log("Data:" + userlist)
-        ctx.reply("Steel Servers #2 [CS:Source]\n" + userlist);
+        console.log("Data:" + userlist1)
+        ctx.reply("Steel Servers #2 [CS:Source]\n" + userlist1);
     })
-    allPlayers.clear();
+    allPlayers1.clear();
 })
 bot.on('message', async (ctx) =>{
 
