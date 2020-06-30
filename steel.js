@@ -10,6 +10,9 @@ const KEY_1 = "564a29a0054b2b2f61cf0d9b4500d88a";
 const ID_2 = 3461;
 const KEY_2 = "70a0248ef27807968883b1620198e9e2";
 
+const delayInMilliseconds = 500;
+
+var choseServer = '';
 var maps = ['awp_lego_2','awp_india','aim_deagle7k','$2000$','de_dust2','de_cache','de_mirage_csgo'];
 
 bot.start((ctx) => {
@@ -18,7 +21,6 @@ bot.start((ctx) => {
     console.log(ctx.from.id)
 
 })
-
 
 bot.command("/start_server",async (ctx) =>{
     if(ctx.from.username == "opcoder") {
@@ -87,34 +89,31 @@ bot.command("/online",async (ctx) => {
             "Map: " + body.info.map + "\n");
 
     })
-    const url_2 = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID_2 +"&key=" + KEY_2;
-    request({
-        url: url_2,
-        json: true
-    }, function (error, response, body) {
+    setTimeout(function() {
+        const url_2 = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID_2 +"&key=" + KEY_2;
+        request({
+            url: url_2,
+            json: true
+        }, function (error, response, body) {
 
-        console.log("Map: " + body.info.map)
-        ctx.reply("Steel Servers #2 [CS:Source]\n" +
-            "Online: " + body.info.activeplayers + "\n" +
-            "Map: " + body.info.map + "\n");
+            console.log("Map: " + body.info.map)
+            ctx.reply("Steel Servers #2 [CS:Source]\n" +
+                "Online: " + body.info.activeplayers + "\n" +
+                "Map: " + body.info.map + "\n");
 
-    })
+        })
+    },delayInMilliseconds);
 })
 bot.command("/map",async (ctx) => {
-
-    bot.telegram.sendMessage(ctx.chat.id,'Выберите карту:',{
+    bot.telegram.sendMessage(ctx.chat.id,'Выберите сервер:',{
         reply_markup:{
             keyboard:[
-                ['awp_lego_2','awp_india'],
-                ['aim_deagle7k','$2000$'],
-                ['de_dust2','de_cache'],
-                ['de_mirage_csgo']
+                ['Server 1 [Source]','Server 2 [Source]'],
             ]
         }
     })
 })
 bot.command("/users",ctx => {
-
     const url = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID_1 +"&key=" + KEY_1;
     var userlist = "";
     allPlayers.clear();
@@ -132,7 +131,6 @@ bot.command("/users",ctx => {
         console.log("Data:" + userlist)
         ctx.reply("Steel Servers #1 [CS:Source]\n" + userlist);
     })
-    var delayInMilliseconds = 1000; //1 second
 
     setTimeout(function() {
         var userlist1 = "";
@@ -158,38 +156,52 @@ bot.command("/users",ctx => {
     }, delayInMilliseconds);
 })
 bot.on('message', async (ctx) =>{
-
-    if(maps.indexOf(ctx.message.text) != -1){
-        const url = "http://cp.gamehost.com.ua/api.html?action=map&id=" + ID_1 +"&key=" + KEY_1 + "&map=" + ctx.message.text;
-        request({
-            url: url,
-            json: true
-        }, function (error, response, body) {
-            if(body.result === "OK"){
-                ctx.reply("Администратор " + ctx.from.first_name + " " + ctx.from.last_name +" сменил карту на: " + ctx.message.text)
+    if(ctx.message.text === 'Server 1 [Source]'){
+        choseServer = ctx.message.text;
+        bot.telegram.sendMessage(ctx.chat.id,"Выберите карту",{
+            reply_markup:{
+                keyboard:[
+                    ['awp_lego_2','awp_india'],
+                    ['aim_deagle7k','$2000$'],
+                    ['de_dust2','de_cache'],
+                    ['de_mirage_csgo']
+                ]
             }
         })
-    }else {
-        if (allPlayers.size == 0){
-            ctx.reply("Сперва получите ID введя команду /users")
-        }else {
-            messageData = ctx.message.text.split(" ")
-            console.log(allPlayers)
-            console.log(allPlayers.get(Number(messageData[1])));
-            if(messageData[0] == "/ban") {
-                console.log("Есть")
-                var today = new Date();
-                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                let movieUrl = "http://cp.gamehost.com.ua/api.html?action=command&id=" + ID_1 + "&key=" + KEY_1 + "&command=sm_ban%20" + allPlayers.get(Number(messageData[1])) + "%200%20Тест%20Test"
-                let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-                let page = await browser.newPage();
-                await page.goto(movieUrl, {waitUntil: 'networkidle2'});
-                await browser.close();
-                if (ctx.chat.id != -423897992) {
-                    bot.telegram.sendMessage(-423897992, "[" + time + "] " + "Игрок " + allPlayers.get(Number(messageData[1])) + " забанен администратором: " + ctx.from.first_name)
-                }
-                return ctx.reply("[" + time + "] " + "Игрок " + allPlayers.get(Number(messageData[1])) + " забанен администратором: " + ctx.from.first_name)
+    }else if(ctx.message.text === 'Server 2 [Source]') {
+        choseServer = ctx.message.text;
+        bot.telegram.sendMessage(ctx.chat.id,"Выберите карту",{
+            reply_markup:{
+                keyboard:[
+                    ['awp_lego_2','awp_india'],
+                    ['aim_deagle7k','$2000$'],
+                    ['de_dust2','de_cache'],
+                    ['de_mirage_csgo']
+                ]
             }
+        })
+    }
+    if(maps.indexOf(ctx.message.text) != -1){
+        if(choseServer === 'Server 1 [Source]'){
+            const url = "http://cp.gamehost.com.ua/api.html?action=map&id=" + ID_1 +"&key=" + KEY_1 + "&map=" + ctx.message.text;
+            request({
+                url: url,
+                json: true
+            }, function (error, response, body) {
+                if(body.result === "OK"){
+                    ctx.reply("[1] Администратор " + ctx.from.first_name + " " + ctx.from.last_name +" сменил карту на: " + ctx.message.text)
+                }
+            })
+        }else if(choseServer === 'Server 2 [Source]'){
+            const url = "http://cp.gamehost.com.ua/api.html?action=map&id=" + ID_2 +"&key=" + KEY_2 + "&map=" + ctx.message.text;
+            request({
+                url: url,
+                json: true
+            }, function (error, response, body) {
+                if(body.result === "OK"){
+                    ctx.reply("[2] Администратор " + ctx.from.first_name + " " + ctx.from.last_name +" сменил карту на: " + ctx.message.text)
+                }
+            })
         }
     }
 })
