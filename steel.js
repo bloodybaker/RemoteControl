@@ -132,26 +132,30 @@ bot.command("/users",ctx => {
         console.log("Data:" + userlist)
         ctx.reply("Steel Servers #1 [CS:Source]\n" + userlist);
     })
-    var userlist1 = "";
-    allPlayers.clear();
-    allPlayers1.clear();
-    const url_1 = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID_2 +"&key=" + KEY_2;
-    request({
-        url: url_1,
-        json: true
-    }, function (error, response, body) {
-        for (i in body.players) {
-            console.log(body.players[i].name);
-            allPlayers1.set(parseInt(i),body.players[i].name);
-        }
-        for (var [key, value] of allPlayers1) {
-            userlist1 += key + '. ' + value + "\n";
-        }
-        console.log("Data:" + userlist1)
-        ctx.reply("Steel Servers #2 [CS:Source]\n" + userlist1);
-    })
-    allPlayers.clear();
-    allPlayers1.clear();
+    var delayInMilliseconds = 1000; //1 second
+
+    setTimeout(function() {
+        var userlist1 = "";
+        allPlayers.clear();
+        allPlayers1.clear();
+        const url_1 = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID_2 +"&key=" + KEY_2;
+        request({
+            url: url_1,
+            json: true
+        }, function (error, response, body) {
+            for (i in body.players) {
+                console.log(body.players[i].name);
+                allPlayers1.set(parseInt(i),body.players[i].name);
+            }
+            for (var [key, value] of allPlayers1) {
+                userlist1 += key + '. ' + value + "\n";
+            }
+            console.log("Data:" + userlist1)
+            ctx.reply("Steel Servers #2 [CS:Source]\n" + userlist1);
+        })
+        allPlayers.clear();
+        allPlayers1.clear();
+    }, delayInMilliseconds);
 })
 bot.on('message', async (ctx) =>{
 
