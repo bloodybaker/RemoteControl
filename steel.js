@@ -133,6 +133,7 @@ bot.command("/users",ctx => {
         ctx.reply("Steel Servers #1 [CS:Source]\n" + userlist);
     })
     var userlist1 = "";
+    allPlayers.clear();
     allPlayers1.clear();
     const url_1 = "http://cp.gamehost.com.ua/api.html?action=status&id=" + ID_2 +"&key=" + KEY_2;
     request({
@@ -149,6 +150,7 @@ bot.command("/users",ctx => {
         console.log("Data:" + userlist1)
         ctx.reply("Steel Servers #2 [CS:Source]\n" + userlist1);
     })
+    allPlayers.clear();
     allPlayers1.clear();
 })
 bot.on('message', async (ctx) =>{
