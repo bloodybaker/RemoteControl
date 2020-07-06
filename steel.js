@@ -26,18 +26,22 @@ bot.command("/start_server",async (ctx) =>{
     if(ctx.from.username == "opcoder") {
         var today = new Date();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
-        let movieUrl = "http://cp.gamehost.com.ua/api.html?action=start&id=" + ID_1 + "&key=" + KEY_1;
-        let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-        let page = await browser.newPage();
-        await page.goto(movieUrl, {waitUntil: 'networkidle2'});
-        await browser.close();
-
-        let movieUrl1 = "http://cp.gamehost.com.ua/api.html?action=start&id=" + ID_2 + "&key=" + KEY_2;
-        let browser1 = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-        let page1 = await browser1.newPage();
-        await page1.goto(movieUrl1, {waitUntil: 'networkidle2'});
-        await browser1.close();
+        const url = "http://cp.gamehost.com.ua/api.html?action=start&id=" + ID_1 +"&key=" + KEY_1;
+        request({
+            url: url,
+            json: true
+        }, function (error, response, body) {
+            console.log("Start: " + body)
+        })
+        setTimeout(function() {
+            const url_2 = "http://cp.gamehost.com.ua/api.html?action=start&id=" + ID_2 +"&key=" + KEY_2;
+            request({
+                url: url_2,
+                json: true
+            }, function (error, response, body) {
+                console.log("Start: " + body)
+            })
+        },delayInMilliseconds);
         return ctx.reply("[" + time + "] " + "Сервер запущен администратором: " + ctx.from.first_name)
     }else {
         return ctx.reply("Вы не ст. администратор")
@@ -48,18 +52,22 @@ bot.command("/stop_server",async (ctx) => {
     if(ctx.from.username == "opcoder"){
         var today = new Date();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
-        let movieUrl = "http://cp.gamehost.com.ua/api.html?action=stop&id=" + ID_1 + "&key="+KEY_1;
-        let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-        let page = await browser.newPage();
-        await page.goto(movieUrl,{waitUntil:'networkidle2'});
-        await browser.close();
-
-        let movieUrl1 = "http://cp.gamehost.com.ua/api.html?action=stop&id=" + ID_1 + "&key="+KEY_1;
-        let browser1 = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-        let page1 = await browser1.newPage();
-        await page1.goto(movieUrl1,{waitUntil:'networkidle2'});
-        await browser1.close();
+        const url = "http://cp.gamehost.com.ua/api.html?action=stop&id=" + ID_1 +"&key=" + KEY_1;
+        request({
+            url: url,
+            json: true
+        }, function (error, response, body) {
+            console.log("Start: " + body)
+        })
+        setTimeout(function() {
+            const url_2 = "http://cp.gamehost.com.ua/api.html?action=stop&id=" + ID_2 +"&key=" + KEY_2;
+            request({
+                url: url_2,
+                json: true
+            }, function (error, response, body) {
+                console.log("Start: " + body)
+            })
+        },delayInMilliseconds);
         return ctx.reply("[" + time + "] " +"Работа остановлена администратором: " + ctx.from.first_name )
     }else {
         return ctx.reply("Вы не ст. администратор")
