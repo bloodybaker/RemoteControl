@@ -141,6 +141,7 @@ bot.command("/users",ctx => {
     })
 
     setTimeout(function() {
+asdasd
         var userlist1 = "";
         allPlayers.clear();
         allPlayers1.clear();
@@ -212,6 +213,11 @@ bot.on('message', async (ctx) =>{
             })
         }
     }
+    if(ctx.message.text){
+
+    }
 })
+
+
 bot.startPolling()
 
