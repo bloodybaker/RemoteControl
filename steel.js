@@ -141,7 +141,7 @@ bot.command("/users",ctx => {
     })
 
     setTimeout(function() {
-asdasd
+
         var userlist1 = "";
         allPlayers.clear();
         allPlayers1.clear();
