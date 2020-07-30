@@ -139,7 +139,7 @@ bot.command("/users",ctx => {
         console.log("Data:" + userlist)
         ctx.reply("Steel Servers #1 [CS:Source]\n" + userlist);
     })
-
+git test
     setTimeout(function() {
 
         var userlist1 = "";
