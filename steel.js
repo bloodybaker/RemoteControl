@@ -7,8 +7,8 @@ const allPlayers1 = new Map();
 
 const ID_1 = 3434;
 const KEY_1 = "564a29a0054b2b2f61cf0d9b4500d88a";
-const ID_2 = 3461;
-const KEY_2 = "70a0248ef27807968883b1620198e9e2";
+const ID_2 = 3481;
+const KEY_2 = "590fb7c4e54b02b9eb7fcbe4f02d36b5";
 
 const delayInMilliseconds = 500;
 
@@ -92,7 +92,7 @@ bot.command("/online",async (ctx) => {
     }, function (error, response, body) {
 
         console.log("Map: " + body.info.map)
-        ctx.reply("Steel Servers #1 [CS:Source]\n" +
+        ctx.reply("Steel Servers [CS:Source]\n" +
             "Online: " + body.info.activeplayers + "\n" +
             "Map: " + body.info.map + "\n");
 
@@ -105,7 +105,7 @@ bot.command("/online",async (ctx) => {
         }, function (error, response, body) {
 
             console.log("Map: " + body.info.map)
-            ctx.reply("Steel Servers #2 [CS:Source]\n" +
+            ctx.reply("Steel Servers [CS:GO]\n" +
                 "Online: " + body.info.activeplayers + "\n" +
                 "Map: " + body.info.map + "\n");
 
@@ -116,7 +116,7 @@ bot.command("/map",async (ctx) => {
     bot.telegram.sendMessage(ctx.chat.id,'Выберите сервер:',{
         reply_markup:{
             keyboard:[
-                ['Server 1 [Source]','Server 2 [Source]'],
+                ['Server 1 [Source]','Steel Servers [CS:GO]'],
             ]
         }
     })
@@ -137,7 +137,7 @@ bot.command("/users",ctx => {
             userlist += key + '. ' + value + "\n";
         }
         console.log("Data:" + userlist)
-        ctx.reply("Steel Servers #1 [CS:Source]\n" + userlist);
+        ctx.reply("Steel Servers [CS:Source]\n" + userlist);
     })
 
     setTimeout(function() {
@@ -157,7 +157,7 @@ bot.command("/users",ctx => {
                 userlist1 += key + '. ' + value + "\n";
             }
             console.log("Data:" + userlist1)
-            ctx.reply("Steel Servers #2 [CS:Source]\n" + userlist1);
+            ctx.reply("Steel Servers [CS:GO]\n" + userlist1);
         })
         allPlayers.clear();
         allPlayers1.clear();
@@ -176,7 +176,7 @@ bot.on('message', async (ctx) =>{
                 ]
             }
         })
-    }else if(ctx.message.text === 'Server 2 [Source]') {
+    }else if(ctx.message.text === 'Steel Servers [CS:GO]') {
         choseServer = ctx.message.text;
         bot.telegram.sendMessage(ctx.chat.id,"Выберите карту",{
             reply_markup:{
