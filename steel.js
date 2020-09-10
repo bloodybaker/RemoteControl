@@ -1,14 +1,14 @@
 const Telegraf = require('telegraf')
 const puppeteer = require('puppeteer');
-const bot = new Telegraf('991609713:AAF3_AeWLrDlo3ZZKLKiOJdkX55vB8-2Lzw')
+const bot = new Telegraf('token')
 const request = require("request")
 const allPlayers = new Map();
 const allPlayers1 = new Map();
 
 const ID_1 = 3434;
-const KEY_1 = "564a29a0054b2b2f61cf0d9b4500d88a";
+const KEY_1 = "key";
 const ID_2 = 3481;
-const KEY_2 = "590fb7c4e54b02b9eb7fcbe4f02d36b5";
+const KEY_2 = "key";
 
 const delayInMilliseconds = 500;
 
